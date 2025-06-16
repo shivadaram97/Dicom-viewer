@@ -1,0 +1,54 @@
+
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>DICOM Viewer</title>
+    <style>
+      body {
+        margin: 0;
+        background: black;
+      }
+      #dicomImage {
+        width: 100vw;
+        height: 100vh;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="dicomImage"></div>
+
+    <!-- Load cornerstone libraries -->
+    <script src="https://unpkg.com/cornerstone-core@2.4.0/dist/cornerstone.min.js"></script>
+    <script src="https://unpkg.com/dicom-parser@1.8.7/dist/dicomParser.min.js"></script>
+    <script src="https://unpkg.com/cornerstone-wado-image-loader@3.0.1/dist/cornerstoneWADOImageLoader.min.js"></script>
+    <script src="https://unpkg.com/cornerstone-wado-image-loader@3.0.1/dist/cornerstoneWADOImageLoaderCodecs.min.js"></script>
+
+    <script>
+      window.onload = function () {
+        const element = document.getElementById('dicomImage');
+        cornerstoneWADOImageLoader.external.cornerstone = cornerstone;
+
+        cornerstoneWADOImageLoader.webWorkerManager.initialize({
+          taskConfiguration: {
+            decodeTask: {
+              codecsPath:
+                'https://cdn.jsdelivr.net/npm/cornerstone-wado-image-loader@3.0.1/dist/cornerstoneWADOImageLoaderCodecs.min.js',
+            },
+          },
+        });
+
+        cornerstone.enable(element);
+
+        const imageId =
+          'wadouri:https://raw.githubusercontent.com/cornerstonejs/cornerstone-wado-image-loader/main/examples/images/CTImage.dcm';
+
+        cornerstone.loadImage(imageId).then(function (image) {
+          cornerstone.displayImage(element, image);
+        }).catch(function (error) {
+          alert("Error loading image: " + error.message);
+        });
+      };
+    </script>
+  </body>
+</html>
